@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LoginModule } from './auth/login/login.module';
-import { SignModule } from './auth/sign/sign.module';
+import { LoginModule } from './user/login/login.module';
+import { SignModule } from './user/sign/sign.module';
 import { User } from './Entitys/user.entity';
 
 @Module({
