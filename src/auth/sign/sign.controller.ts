@@ -9,7 +9,7 @@ export class SignController {
 
      @Get()
      rutaSignUp () {
-          return " Sign Up route"
+          return this._signService.getUsers()
      }
 
      @Post()
