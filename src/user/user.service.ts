@@ -16,8 +16,9 @@ export class UserService {
           const newUser = await this.userRepository.save(user)
           return `${newUser.username} saved successfully`
      }
-     loginUser ( user : UserToLogin ){
-          return user;
+     async loginUser ( user : UserToLogin ){
+          const loggedUser = await this.userRepository.findOneBy({ email: user.email })
+          return loggedUser ? loggedUser : 'any of the credentials do not match '
      }
 
      async getUsers () {
