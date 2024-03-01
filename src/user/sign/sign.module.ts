@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SignController } from './sign.controller';
-import { SignService } from './sign.service';
 import { User } from 'src/Entitys/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserService } from '../user.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [SignController],
-  providers: [SignService]
+  providers: [UserService]
 })
 export class SignModule {}
