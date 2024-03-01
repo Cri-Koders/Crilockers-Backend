@@ -1,11 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { LoginService } from './login.service';
 import { UserToLogin } from './dto/login.dto';
-
+import { UserService } from '../user.service';
 @Controller('login')
 export class LoginController {
 
-     constructor( private _loginService : LoginService ) {}
+     constructor( private _userService : UserService ) {}
      
      @Get()
      rutaLogin(){
@@ -14,6 +13,6 @@ export class LoginController {
 
      @Post()
      userLogin( @Body() user : UserToLogin){
-          return this._loginService.loginUser(user);
+          return this._userService.loginUser(user);
      }
 }
