@@ -1,5 +1,6 @@
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { prisma } from 'src/DataBase/tursoConnection';
+import generateId from '../helpers/idGenerator';
 
 @Controller('users')
 export class UsersController {
@@ -20,8 +21,9 @@ export class UsersController {
     try {
       const createUser = await prisma.users.create({
         data: {
+          id: generateId(),
           name: 'Fede Bastias',
-          email: 'gabi.bastias@gmail.com',
+          email: 'gabi.bastias10@gmail.com',
           password: '123Gabi',
         },
       });
