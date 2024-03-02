@@ -1,14 +1,14 @@
 import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import db from 'src/DataBase/tursoConnection';
+import { prisma } from 'src/DataBase/tursoConnection';
 
 @Controller('users')
 export class UsersController {
   @Get()
   async getUser() {
     try {
-      const users = await db.execute(`SELECT * FROM users`);
-      console.log(users);
-      return users;
+      const allUsers = await prisma.users.findMany();
+      console.log(allUsers);
+      return allUsers;
     } catch (error) {
       console.log(error);
       return { error: error.message };
@@ -18,10 +18,13 @@ export class UsersController {
   @Post()
   async createUser() {
     try {
-      const createUser = await db.execute(
-        `INSERT INTO users (name, email, password) VALUES ('Pepito', 'Pepito', '123Pepa');
-        ,`,
-      );
+      const createUser = await prisma.users.create({
+        data: {
+          name: 'Fede Bastias',
+          email: 'gabi.bastias@gmail.com',
+          password: '123Gabi',
+        },
+      });
       return createUser;
     } catch (error) {
       console.log(error);
@@ -31,11 +34,11 @@ export class UsersController {
   @Delete(':id')
   async deleteUser(@Param('id') id: number) {
     try {
-      const deleteUser = await db.execute({
-        sql: 'DELETE FROM users WHERE id = (:id)',
-        args: { id },
-      });
-      return deleteUser;
+      // const deleteUser = await db.execute({
+      //   sql: 'DELETE FROM users WHERE id = (:id)',
+      //   args: { id },
+      // });
+      // return deleteUser;
     } catch (error) {
       console.log(error);
       return { error: error.message };
