@@ -7,12 +7,17 @@ import { User } from './Entitys/user.entity';
 import { UserService } from './user/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), LoginModule, SignModule, TypeOrmModule.forRoot({
+  imports: [
+    TypeOrmModule.forFeature([User]), 
+    LoginModule, 
+    SignModule, 
+    TypeOrmModule.forRoot({
     type: 'sqlite',
     database: './DataBase/tursoConnection',
     entities: [User],
     synchronize: true
-  })],
+  })
+],
   controllers: [AppController],
   providers: [UserService],
 })
