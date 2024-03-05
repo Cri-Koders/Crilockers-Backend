@@ -5,7 +5,6 @@ import { User } from 'src/Entitys/user.entity';
 import { Repository } from 'typeorm';
 import { UserToLogin } from './login/dto/login.dto';
 import * as bcrypt from 'bcrypt'
-import { throwError } from 'rxjs';
 @Injectable()
 export class UserService {
      constructor(
