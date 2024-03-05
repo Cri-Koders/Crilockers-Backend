@@ -7,6 +7,8 @@ import { User } from './Entitys/user.entity';
 import { UserService } from './user/user.service';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { JwtModule } from '@nestjs/jwt';
+import { FacebookStrategy } from './Stratergies/facebook.strategy';
 
 @Module({
   imports: [
@@ -22,10 +24,15 @@ import { UserModule } from './user/user.module';
       entities: [User],
       synchronize: true
     }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '20h' },
+    }),
     // Modules
     UserModule
 ],
   controllers: [AppController],
-  providers: [],
+  providers: [ FacebookStrategy ],
 })
 export class AppModule {}

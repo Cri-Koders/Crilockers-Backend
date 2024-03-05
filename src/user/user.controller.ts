@@ -5,7 +5,7 @@ import { UpdateUser } from './dto/updateUser.dto'
 @Controller('user')
 export class UserController {
      constructor(private readonly _userService: UserService) {}
-     
+
      @Get()
      getUsers() {
           return this._userService.getUsers();
@@ -21,7 +21,6 @@ export class UserController {
           return this._userService.updateUser(id, user);
      }
      
-
      @Delete(':id')
      deleteUser(@Param('id') id: string) {
           return this._userService.deleteUser(id);
