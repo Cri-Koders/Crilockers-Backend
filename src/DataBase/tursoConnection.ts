@@ -2,10 +2,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { createClient } from '@libsql/client';
 
-const db = createClient({
-  url: process.env.DB_URL,
-  authToken: process.env.DB_TOKEN,
-});
+// const db = createClient({
+//   url: process.env.DB_URL,
+//   authToken: process.env.DB_TOKEN,
+// });
 
 // const initializeDatabase = async () => {
 //   try {
@@ -26,4 +26,4 @@ const db = createClient({
 
 // initializeDatabase();
 
-export default db;
+// export default db;
