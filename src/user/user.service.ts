@@ -6,11 +6,13 @@ import { Repository } from 'typeorm';
 import { UserToLogin } from './login/dto/login.dto';
 import * as bcrypt from 'bcrypt'
 import { UpdateUser } from './dto/updateUser.dto';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UserService {
      constructor(
           @InjectRepository(User)
-          private userRepository: Repository<User>
+          private userRepository: Repository<User>,
+          private jwtService : JwtService
      ){}
 
      async signupUser ( user : UserToSign) {
@@ -39,7 +41,12 @@ export class UserService {
                if ( !isMatch ) throw new UnauthorizedException('Unauthorized');
 
                delete loggedUser.password
-               return loggedUser;
+               const payload = { id : loggedUser.id, email : loggedUser.email }
+               const token = this.jwtService.sign(payload)
+               return {
+                    loggedUser,
+                    token
+               };
           }
           catch (error) {
                if(error.status == 404){
