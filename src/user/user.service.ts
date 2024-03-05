@@ -36,8 +36,9 @@ export class UserService {
                if ( !loggedUser ) throw new NotFoundException('Not Found')
 
                const isMatch = await bcrypt.compare(user.password, loggedUser.password)
-
                if ( !isMatch ) throw new UnauthorizedException('Unauthorized');
+
+               delete loggedUser.password
                return loggedUser;
           }
           catch (error) {
@@ -56,7 +57,10 @@ export class UserService {
                if(users.length <= 0){
                     throw new Error ('there are no users in the database');
                }
-               return users
+               return users.map ((user) => {
+                    delete user.password
+                    return user
+               } )
           }
           catch (error) {
                throw new NotFoundException(error.message);
@@ -69,6 +73,7 @@ export class UserService {
                if(!user){
                     throw new NotFoundException('Not Found');
                }
+               delete user.password
                return user
           }
           catch (error) {
