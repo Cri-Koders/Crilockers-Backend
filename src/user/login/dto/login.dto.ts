@@ -6,8 +6,8 @@ export class UserToLogin {
      @IsEmail()
      email: string;
      
-     @IsNotEmpty()
-     @IsString()
-     @MinLength(6)
+     // @IsNotEmpty()
+     // @IsString()
+     // @MinLength(6)
      password: string;
 }
