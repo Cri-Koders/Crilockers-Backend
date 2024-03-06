@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { FacebookStrategy } from './Stratergies/facebook.strategy';
+import { GoogleStrategy } from './Stratergies/google.strategy';
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { FacebookStrategy } from './Stratergies/facebook.strategy';
     UserModule
 ],
   controllers: [AppController],
-  providers: [ FacebookStrategy ],
+  providers: [ FacebookStrategy, GoogleStrategy ],
 })
 export class AppModule {}

@@ -23,7 +23,8 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
                const user = {
                     email: emails[0].value,
                     firstName: name.givenName,
-                    lastName: name.familyName
+                    lastName: name.familyName,
+                    image: profile.photos
                }
                const payload = {
                     user,
