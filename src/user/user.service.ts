@@ -7,6 +7,8 @@ import { UserToLogin } from './login/dto/login.dto';
 import * as bcrypt from 'bcrypt'
 import { UpdateUser } from './dto/updateUser.dto';
 import { JwtService } from '@nestjs/jwt';
+import { userLoginWFacebook } from './login/dto/loginFacebook.dto';
+import { randomBytes } from 'crypto';
 @Injectable()
 export class UserService {
      constructor(
@@ -32,6 +34,7 @@ export class UserService {
                throw new Error (error)
           }
      }
+
      async loginUser ( user : UserToLogin ){
           try {
                const loggedUser = await this.userRepository.findOneBy({ email: user.email })
@@ -76,7 +79,7 @@ export class UserService {
 
      async getUserById ( id : string ){
           try{
-               const user = await this.userRepository.findOneBy({ id: +id })
+               const user = await this.userRepository.findOneBy({ id: id })
                if(!user){
                     throw new NotFoundException('Not Found');
                }
@@ -92,7 +95,7 @@ export class UserService {
 
      async updateUser ( id : string, user : UpdateUser) {
           try {
-               const userToUpdate = await this.userRepository.findOneBy({ id: +id })
+               const userToUpdate = await this.userRepository.findOneBy({ id: id })
                if(!userToUpdate){
                     throw new NotFoundException('Not Found');
                }
@@ -109,7 +112,7 @@ export class UserService {
 
      async deleteUser ( id : string ){
           try{
-               const user = await this.userRepository.findOneBy({ id: +id })
+               const user = await this.userRepository.findOneBy({ id: id })
                if(!user){
                     throw new NotFoundException ('Not Found');
                } 
@@ -118,6 +121,48 @@ export class UserService {
           }
           catch (error) {
                throw new NotFoundException('the user does not exist');
+          }
+     }
+
+     async saveFacebookUser( user : userLoginWFacebook ){
+          try {
+               const existingUser = await this.userRepository.findOneBy({ email : user.user.email })
+               if(!existingUser){
+                    const newUser = {
+                         username : `${user.user.firstName} ${user.user.lastName}`,
+                         email: user.user.email,
+                         password: randomBytes(16).toString('hex')
+                    }
+                    const userRegistered = await this.userRepository.save(newUser)
+                    delete userRegistered.password
+                    return userRegistered
+               }
+               delete existingUser.password
+               return existingUser
+          }
+          catch (error) {
+               throw new Error (error)
+          }
+     }
+
+     async saveGoogleUser( user : userLoginWGoogle ){
+          try {
+               const existingUser = await this.userRepository.findOneBy({ email : user.email })
+               if(!existingUser){
+                    const newUser = {
+                         username : `${user.firstName} ${user.lastName}`,
+                         email: user.email,
+                         password: randomBytes(16).toString('hex')
+                    }
+                    const userRegistered = await this.userRepository.save(newUser)
+                    delete userRegistered.password
+                    return userRegistered
+               }
+               delete existingUser.password
+               return existingUser
+          }
+          catch (error) {
+               throw new Error (error)
           }
      }
 
