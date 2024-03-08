@@ -1,13 +1,13 @@
 import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { UserToSign } from './sign/dto/sign.dto';
+import { UserToSign } from '../auth/dto/sign.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entitys/user.entity';
 import { Repository } from 'typeorm';
-import { UserToLogin } from './login/dto/login.dto';
+import { UserToLogin } from '../auth/dto/login.dto';
 import * as bcrypt from 'bcrypt'
 import { UpdateUser } from './dto/updateUser.dto';
 import { JwtService } from '@nestjs/jwt';
-import { userLoginWFacebook } from './login/dto/loginFacebook.dto';
+import { userLoginWFacebook } from '../auth/dto/loginFacebook.dto';
 import { randomBytes } from 'crypto';
 @Injectable()
 export class UserService {
