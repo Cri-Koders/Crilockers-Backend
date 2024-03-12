@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { UserToLogin } from './dto/login.dto';
-import { UserService } from '../user.service';
+import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { userLoginWFacebook } from './dto/loginFacebook.dto';
