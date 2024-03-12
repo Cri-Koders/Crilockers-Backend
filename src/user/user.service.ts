@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserToSign } from './dto/sign.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entitys/user.entity';
@@ -53,6 +53,7 @@ export class UserService {
                delete loggedUser.password
                const payload = { id : loggedUser.id, email : loggedUser.email }
                const token = this.jwtService.sign(payload)
+
                return {
                     user: loggedUser,
                     token
