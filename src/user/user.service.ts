@@ -1,14 +1,15 @@
-import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { UserToSign } from './sign/dto/sign.dto';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UserToSign } from './dto/sign.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/Entitys/user.entity';
 import { Repository } from 'typeorm';
-import { UserToLogin } from './login/dto/login.dto';
+import { UserToLogin } from './dto/login.dto';
 import * as bcrypt from 'bcrypt'
 import { UpdateUser } from './dto/updateUser.dto';
 import { JwtService } from '@nestjs/jwt';
-import { userLoginWFacebook } from './login/dto/loginFacebook.dto';
+import { userLoginWFacebook } from './dto/loginFacebook.dto';
 import { randomBytes } from 'crypto';
+import { TokenRefreshDto } from './dto/tokenRefresh.dto';
 @Injectable()
 export class UserService {
      constructor(
@@ -24,8 +25,16 @@ export class UserService {
                newUser.username = user.username;
                newUser.email = user.email;
                newUser.password = await bcrypt.hash( user.password, salt )
-               const message = await this.userRepository.save(newUser)
-               return `user ${newUser.username} created successfully`
+               const userSaved = await this.userRepository.save(newUser)
+               delete userSaved.password
+               const payload = { id : userSaved.id, email : userSaved.email }
+               const token = this.jwtService.sign(payload)
+               const refreshToken = this.generateRefreshToken( userSaved )
+               const userLogged = {
+                    user: userSaved,
+                    token
+               }
+               return userLogged
           }
           catch (error) {
                if(error.code === "ER_DUP_ENTRY"){
@@ -46,9 +55,12 @@ export class UserService {
                delete loggedUser.password
                const payload = { id : loggedUser.id, email : loggedUser.email }
                const token = this.jwtService.sign(payload)
+               const refreshToken = this.generateRefreshToken( loggedUser )
+
                return {
-                    loggedUser,
-                    token
+                    user: loggedUser,
+                    token,
+                    refreshToken
                };
           }
           catch (error) {
@@ -166,5 +178,33 @@ export class UserService {
           }
      }
 
+     async generateRefreshToken( user : TokenRefreshDto ) {
+          const payload = { id: user.id, email: user.email };
+          return this.jwtService.sign(payload, { expiresIn: '2d' });
+     } 
+
+     async refreshToken ( refreshToken : string ) {
+          try {
+               const payload = this.jwtService.verify( refreshToken )
+               const user = await this.userRepository.findOneBy({ id: payload.id })
+               if(!user){
+                    throw new UnauthorizedException('Unauthorized')
+               }
+
+               const newAccessToken = this.jwtService.sign( {
+                    id: user.id,
+                    email: user.email
+               })
+               const newRefreshToken = await this.generateRefreshToken( user ) 
+               
+               return {
+                    accessToken: newAccessToken,
+                    refreshToken: newRefreshToken
+               }
+          }
+          catch (error) {
+               throw new UnauthorizedException('Unauthorized')
+          }
+     }
 
 }
