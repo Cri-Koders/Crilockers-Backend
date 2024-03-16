@@ -25,7 +25,7 @@ import { GoogleStrategy } from './Stratergies/google.strategy';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '20h' },
+      signOptions: { expiresIn: '2d' },
     }),
     // Modules
     UserModule
