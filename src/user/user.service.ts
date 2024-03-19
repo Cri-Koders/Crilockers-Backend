@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserToSign } from './dto/sign.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +9,18 @@ import * as bcrypt from 'bcrypt'
 import { UpdateUser } from './dto/updateUser.dto';
 import { JwtService } from '@nestjs/jwt';
 import { userLoginWFacebook } from './dto/loginFacebook.dto';
+=======
+import { ConflictException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UserToSign } from '../auth/dto/sign.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/Entitys/user.entity';
+import { Repository } from 'typeorm';
+import { UserToLogin } from '../auth/dto/login.dto';
+import * as bcrypt from 'bcrypt'
+import { UpdateUser } from './dto/updateUser.dto';
+import { JwtService } from '@nestjs/jwt';
+import { userLoginWFacebook } from '../auth/dto/loginFacebook.dto';
+>>>>>>> 6a9e4b1179e8bf7064e375dd92fa5164f2a0d17b
 import { randomBytes } from 'crypto';
 import { TokenRefreshDto } from './dto/tokenRefresh.dto';
 @Injectable()
