@@ -1,15 +1,15 @@
 
-class contentUserFacebook {
-     email: string;
+// class contentUserFacebook {
+//      email: string;
 
-     firstName: string;
+//      firstName: string;
 
-     lastName?: string;
-}
+//      lastName?: string;
+// }
 
-export class userLoginWFacebook {
+// export class userLoginWFacebook {
 
-     user: contentUserFacebook
+//      user: contentUserFacebook
 
-     accessToken: string
-}
+//      accessToken: string
+// }
