@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { FacebookStrategy } from './Stratergies/facebook.strategy';
 import { GoogleStrategy } from './Stratergies/google.strategy';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { GoogleStrategy } from './Stratergies/google.strategy';
       signOptions: { expiresIn: '2d' },
     }),
     // Modules
-    UserModule
+    UserModule,
+    AuthModule,
 ],
   controllers: [AppController],
   providers: [ FacebookStrategy, GoogleStrategy ],
