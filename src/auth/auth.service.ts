@@ -27,13 +27,11 @@ export class AuthService {
                newUser.password = await bcrypt.hash( user.password, salt )
                const userSaved = await this.userRepository.save(newUser)
                delete userSaved.password
-               const payload = { id : userSaved.id, email : userSaved.email }
-               const token = this.jwtService.sign(payload)
-               const refreshToken = await this.generateRefreshToken( userSaved )
+               const tokens = await this.generateRefreshToken( userSaved )
                const userLogged = {
                     user: userSaved,
-                    token,
-                    refreshToken
+                    token: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
                }
                return userLogged
           }
@@ -54,14 +52,12 @@ export class AuthService {
                if ( !isMatch ) throw new UnauthorizedException('Unauthorized');
 
                delete loggedUser.password
-               const payload = { id : loggedUser.id, email : loggedUser.email }
-               const token = this.jwtService.sign(payload)
-               const refreshToken = await this.generateRefreshToken( loggedUser )
+               const tokens = await this.generateRefreshToken(loggedUser)
 
                return {
                     user: loggedUser,
-                    token,
-                    refreshToken
+                    token: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
                };
           }
           catch (error) {
@@ -77,6 +73,7 @@ export class AuthService {
      async saveFacebookUser( user : userLoginWFacebook ){
           try {
                const existingUser = await this.userRepository.findOneBy({ email : user.user.email })
+               const tokens = await this.generateRefreshToken(existingUser && existingUser )
                if(!existingUser){
                     const newUser = {
                          username : `${user.user.firstName} ${user.user.lastName}`,
@@ -85,10 +82,18 @@ export class AuthService {
                     }
                     const userRegistered = await this.userRepository.save(newUser)
                     delete userRegistered.password
-                    return userRegistered
+                    return {
+                         userRegistered,
+                         token: tokens.accessToken,
+                         refreshToken: tokens.refreshToken
+                    }
                }
                delete existingUser.password
-               return existingUser
+               return {
+                    existingUser,
+                    token: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
+               }
           }
           catch (error) {
                throw new Error (error)
@@ -98,6 +103,7 @@ export class AuthService {
      async saveGoogleUser( user : userLoginWGoogle ){
           try {
                const existingUser = await this.userRepository.findOneBy({ email : user.email })
+               const tokens = await this.generateRefreshToken(existingUser && existingUser )
                if(!existingUser){
                     const newUser = {
                          username : `${user.firstName} ${user.lastName}`,
@@ -106,10 +112,18 @@ export class AuthService {
                     }
                     const userRegistered = await this.userRepository.save(newUser)
                     delete userRegistered.password
-                    return userRegistered
+                    return {
+                         userRegistered,
+                         token: tokens.accessToken,
+                         refreshToken: tokens.refreshToken
+                    }
                }
                delete existingUser.password
-               return existingUser
+               return {
+                    existingUser,
+                    token: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
+               }
           }
           catch (error) {
                throw new Error (error)
@@ -131,6 +145,7 @@ export class AuthService {
                const newRefreshToken = await this.generateRefreshToken( user ) 
                
                return {
+                    user,
                     accessToken: newAccessToken,
                     refreshToken: newRefreshToken
                }
@@ -140,8 +155,13 @@ export class AuthService {
           }
      }
 
-     async generateRefreshToken( user : TokenRefreshDto ) {
+     private async generateRefreshToken( user : TokenRefreshDto ) {
           const payload = { id: user.id, email: user.email };
-          return this.jwtService.sign(payload, { expiresIn: '2d' });
+          const accessToken = this.jwtService.sign(payload, { expiresIn: '2d' });
+          const refreshToken = this.jwtService.sign(payload, { expiresIn: '1d' })
+          return {
+               accessToken,
+               refreshToken
+          }
      } 
 }
