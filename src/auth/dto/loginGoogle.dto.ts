@@ -1,5 +1,5 @@
 
-class userLoginWGoogle {
+export class userLoginWGoogle {
      email: string;
      firstName: string;
      lastName: string;

@@ -26,6 +26,4 @@ export class UserController {
           return this._userService.deleteUser(id);
      }
 
-
-
 }
