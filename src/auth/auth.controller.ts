@@ -6,6 +6,7 @@ import { UserToLogin } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { userLoginWFacebook } from './dto/loginFacebook.dto';
 import { userLoginWGoogle } from './dto/loginGoogle.dto';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -19,10 +20,18 @@ export class AuthController {
     return this._authService.signupUser(user);
 }
 
-  @Post('/login')
-  async userLogin( @Body() user : UserToLogin){
-      return this._authService.loginUser(user);
-  }
+
+     @Post('/login')
+     async userLogin( @Body() user : UserToLogin){
+          return this._authService.loginUser(user);
+     }
+
+     @Post('/refresh')
+     async refreshToken( @Req() request : Request ){
+     const [ type, token ] = request.headers['authorization']?.split(' ') || []
+     return this._authService.refreshToken( token )
+     //  return this._authService.loginUser(user);
+     }
 
   @Get('/facebook')
      @UseGuards(AuthGuard('facebook'))
